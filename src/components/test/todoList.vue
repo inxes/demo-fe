@@ -3,26 +3,28 @@
         <h1>{{title}}</h1>
         <input type="text" class="addTodo" id="addTodo" v-model="newTodo" @keyup.enter="add">
         <ul v-if="list !== []">
-            <li v-for="li in list" :class="{finish:li.value}" @click="cancle">
-                <span>{{li.event}}</span><span v-if="li.value === 0">未完成</span><span v-else>已完成</span>
+            <li v-for="li in list" :class="{finish:li.value}" @click="cancle(li)">
+                <span>{{li.event}}</span><span v-if="li.value == 0">未完成</span><span v-else>已完成</span>
             </li>
         </ul>
     </div>
 </template>
 <script>
+import Store from "../../store.js";
+console.log(Store.fetch());
 export default {
     data () {
         return{
            title:'hello',
-           list:[
-           ],
+           list:Store.fetch()?Store.fetch():[],
            newTodo:'',
            finish:'finish'
         }
     },
     methods:{
-        cancle:function(){
-
+        cancle:function(item){
+            item.value = !item.value;
+            console.log(item.value);
         },
         add:function(){
             this.list.push({
@@ -32,6 +34,16 @@ export default {
             this.newTodo = '';
             console.log(this.list);
         }
+    },
+    watch:{
+        list:{
+            handler:function(list){
+                console.log(list);
+                Store.save(list);
+            },
+            deep:true 
+        }
+        
     }
 }
 </script>
