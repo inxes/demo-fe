@@ -13,13 +13,13 @@ export default new Router({
     //   name: 'HelloWorld',
     //   component: HelloWorld
     // },
-    // {
-    //   path: '/',
-    //   name: 'upload',
-    //   component: upload
-    // }
     {
-      path: '/',
+      path: '/upload',
+      name: 'upload',
+      component: upload
+    },
+    {
+      path: '/123',
       name: 'todoList',
       component: todoList
     }

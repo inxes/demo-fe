@@ -1,8 +1,8 @@
 <template>
-    <div class="upload">
+    <div id="upload">
         <h1>{{msg}}</h1>
         <div class="row">
-        <span class="personattr">身份证正面照片:</span>
+        <span class="personattr">:):</span>
         <input type="hidden" name="img"  id="thumbUrl"/>
         <input type="file" name="logoFile" id="logoFile" onchange="setImg(this);">
         <span><img id="thumburlShow" src="" width="120" height="120"/></span>
