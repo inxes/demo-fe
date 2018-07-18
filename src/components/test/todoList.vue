@@ -10,6 +10,7 @@
         <ul v-if="list !== []">
             <li v-for="li in list" :class="{finish:li.value}" @click="cancle">
                 <el-button>{{li.event}}</el-button><span v-if="li.value === 0">未完成</span><span v-else>已完成</span>
+
             </li>
         </ul>
     </div>
@@ -19,19 +20,21 @@
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
 <script>
+import Store from "../../store.js";
+console.log(Store.fetch());
 export default {
     data () {
         return{
            title:'hello',
-           list:[
-           ],
+           list:Store.fetch()?Store.fetch():[],
            newTodo:'',
            finish:'finish'
         }
     },
     methods:{
-        cancle:function(){
-
+        cancle:function(item){
+            item.value = !item.value;
+            console.log(item.value);
         },
         add:function(){
             this.list.push({
@@ -41,6 +44,16 @@ export default {
             this.newTodo = '';
             console.log(this.list);
         }
+    },
+    watch:{
+        list:{
+            handler:function(list){
+                console.log(list);
+                Store.save(list);
+            },
+            deep:true 
+        }
+        
     }
 }
 </script>
