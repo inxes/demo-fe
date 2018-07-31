@@ -10,10 +10,10 @@
     active-text-color="#ffd04b"
     router=true
   >
-    <el-menu-item index="/123">处理中心</el-menu-item>
-    <el-menu-item index="/upload">Dairy</el-menu-item>
-    <el-menu-item index="/">Library</el-menu-item>
-    <el-menu-item index="/">Other</el-menu-item>
+    <el-menu-item index="/123">任务list</el-menu-item>
+    <el-menu-item index="/upload">百度识图</el-menu-item>
+    <!-- <el-menu-item index="/">Library</el-menu-item>-->
+    <el-menu-item index="/login" style=" float: right;">Login</el-menu-item> 
   </el-menu>
     <router-view/>
   </div>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
+import login from '@/components/user/login'
 import todoList from '@/components/test/todoList'
 import upload from '@/components/image/upload'
 
@@ -22,6 +23,10 @@ export default new Router({
       path: '/123',
       name: 'todoList',
       component: todoList
+    },{
+      path: '/login',
+      name: 'login',
+      component: login
     }
   ]
 })
