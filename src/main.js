@@ -9,6 +9,7 @@ import axios from 'axios'
 
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
+Vue.prototype.$app = App
 
 Vue.use(ElementUI, {
   size: 'medium'
