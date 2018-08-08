@@ -12,7 +12,12 @@
   >
     <el-menu-item index="/123">任务list</el-menu-item>
     <el-menu-item index="/upload">百度识图</el-menu-item>
+    <el-menu-item index="/secret">secret</el-menu-item>
     <!-- <el-menu-item index="/">Library</el-menu-item> -->
+    <el-submenu index="2" style="float: right;">
+      <template slot="title">我的工作台</template>
+      <el-menu-item index="/myWorkSpace">选项1</el-menu-item>
+    </el-submenu>
     <el-menu-item index="/login" style=" float: right;" v-show="showLogin">Login</el-menu-item> 
   </el-menu>
     <router-view/>
@@ -44,7 +49,6 @@ export default {
   name: 'App',
   data() {
     return {
-      activeIndex: '1',
       activeIndex2: '1',
       showLogin:false
     };
