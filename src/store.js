@@ -5,5 +5,8 @@ export default{
     },
     save(items){
         window.localStorage.setItem(STORE_KEY,JSON.stringify(items)); 
+    },
+    remove(){
+        window.localStorage.removeItem(STORE_KEY);
     }
 }
