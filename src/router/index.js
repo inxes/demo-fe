@@ -11,6 +11,8 @@ import Axios from 'axios';
 
 Vue.use(Router)
 
+Axios.defaults.withCredentials = true;
+
 Axios.interceptors.request.use(config => {
   if(Cookie.get('Token')) {
     config.headers.Authorization = Cookie.get('Token');

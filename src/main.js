@@ -7,6 +7,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 
+axios.defaults.withCredentials = true;
+
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
 Vue.prototype.$app = App

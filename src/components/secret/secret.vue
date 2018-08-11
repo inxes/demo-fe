@@ -9,6 +9,17 @@
                         <el-form-item label="Secret" :label-width="formLabelWidth">
                             <el-input v-model="secret.content" auto-complete="off" style="width:500px"></el-input>
                         </el-form-item>
+                        <el-form-item label="Upload" :label-width="formLabelWidth">
+                            <el-upload
+                            class="avatar-uploader"
+                            action="http://localhost:8082/secret/upload"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click="dialogSecretVisible = false">取 消</el-button>
@@ -18,19 +29,20 @@
                 
             </div>
             <el-row>
-            <el-col :span="8" v-for="(o, index) in 10" :key="o" :offset="index > 0 ? 2 : 0" type="flex" class="row-bg" justify="space-around">
+            <el-col :span="8" v-for="(o, index) in secretLists" :key="o" :offset="index > 0 ? 2 : 0" type="flex" class="row-bg" justify="space-around">
                 <el-card :body-style="{ padding: '0px' }">
-                <img src="" class="image">
+                <img :src="servicePath+o.img" class="image">
                 <div style="padding: 14px;">
-                    <span>好吃的汉堡</span>
+                    <span>{{o.content}}</span>
                     <div class="bottom clearfix">
-                    <time class="time">{{ currentDate }}</time>
+                    <time class="time">{{ o.createTime }}</time>
                     <el-button type="text" class="button" @click="dialogFormVisible = true">Comment</el-button>
                     <el-dialog title="Add Comment" :visible.sync="dialogFormVisible">
                     <el-form :model="form">
                         <el-form-item label="Comment" :label-width="formLabelWidth">
                         <el-input v-model="form.name" auto-complete="off" style="width:500px"></el-input>
                         </el-form-item>
+                        
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -53,12 +65,16 @@ import { Message } from 'element-ui';
 export default {
     data(){
         return{
+            secretLists : {},
+            servicePath:"http://localhost:8082/secret_img/",
             visible2: false,
             currentDate: new Date(),
             dialogFormVisible : false,
             dialogSecretVisible : false,
+            imageUrl : "",
             form: {
                 name: '',
+                img : ""
             },
             secret:{
                 content :''
@@ -67,11 +83,17 @@ export default {
       
         }
     },
+    mounted:function(){
+        this.secretList();
+    },
     methods:{
         secretList:function(){
+            var _this = this;
             this.$ajax.post('http://localhost:8082/secret/list',{}).then(function(res){
+                console.log(res.data.code);
+                console.log(res.data.data);
                 if(res.data.code == 0){
-                    this.secretList = res.data.data
+                    _this.secretLists = res.data.data
                 }else{
                     Message({
                         message : 'Server Cilent Error!',
@@ -80,9 +102,36 @@ export default {
                 }
             })
         },
+        handleAvatarSuccess(res, file) {
+            console.log(res);
+            if(res.code != 0){
+                Message({
+                    message : 'Upload Fail!',
+                    tyep : 'error'
+                });
+            }else{
+                this.imageUrl = URL.createObjectURL(file.raw);
+                this.form.img = res.data;
+                console.log(this.form.img);
+            }
+            
+        },
+        beforeAvatarUpload(file) {
+            const isJPG = file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG 格式!');
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+                return isJPG && isLt2M;
+            
+        },
         addComment:function(id){
-            this.$ajax.post('http://localhots:8082/comment/add',qs.stringify({
-                s_id : id,
+            this.$ajax.post('http://localhost:8082/comment/add',qs.stringify({
+
                 content : this.form.content
             })).then(function(res){
                 if(res.data.code == 0){
@@ -100,7 +149,8 @@ export default {
             this.dialogFormVisible = false
         },
         addSecret:function(){
-            this.$ajax.post('http://loacalhost:8082/secret/add',qs.stringify({
+            this.$ajax.post('http://localhost:8082/secret/add',qs.stringify({
+                img : this.form.img,
                 content:this.secret.content
             })).then(function(res){
                 if(res.data.code == 0){
@@ -108,6 +158,8 @@ export default {
                         message: 'Success！',
                         type: 'success'
                     });
+                    this.form = "";
+                    this.secret = "";
                 }else{
                     Message({
                         message : 'Fail!',
@@ -157,5 +209,28 @@ export default {
   .row-bg {
     padding: 10px 0;
     background-color: #f9fafc;
+  }
+    .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
 </style>
