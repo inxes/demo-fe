@@ -5,8 +5,10 @@ import HelloWorld from '@/components/HelloWorld'
 import login from '@/components/user/login'
 import todoList from '@/components/test/todoList'
 import upload from '@/components/image/upload'
+import uploadToWall from '@/components/image/uploadToWall'
 import myWorkSpace from '@/components/user/myWorkSpace'
 import secret from '@/components/secret/secret'
+import show from '@/components/show'
 import Axios from 'axios';
 
 Vue.use(Router)
@@ -43,8 +45,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'show',
+      component: show
     },
     {
       path: '/myWorkSpace',
@@ -52,9 +54,20 @@ export default new Router({
       component : myWorkSpace
     },
     {
+      path : '/uploadToWall',
+      name : 'uploadToWall',
+      component : uploadToWall,
+      meta : {
+        requireAuth : true
+      }
+    },
+    {
       path : '/secret',
       name : 'secret',
-      component : secret
+      component : secret,
+      meta: {
+        requireAuth : true
+      },
     },
     {
       path: '/upload',

@@ -36,7 +36,8 @@
                     <span>{{o.content}}</span>
                     <div class="bottom clearfix">
                     <time class="time">{{ o.createTime }}</time>
-                    <el-button type="text" class="button" @click="dialogFormVisible = true">Comment</el-button>
+                    <el-button type="text" class="button" @click="commentList()">Comment</el-button>
+                    <el-button type="text" class="button" @click="closeCard()">Close</el-button>
                     <el-dialog title="Add Comment" :visible.sync="dialogFormVisible">
                     <el-form :model="form">
                         <el-form-item label="Comment" :label-width="formLabelWidth">
@@ -44,9 +45,14 @@
                         </el-form-item>
                         
                     </el-form>
+                        <div slot="body">
+                            <ul>
+                                <li v-for="commentItem in commentlists">{{commentItem.content}}</li>
+                            </ul>
+                        </div>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click="dialogFormVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="addComment(index)">确 定</el-button>
+                        <el-button type="primary" @click="addComment(o.id)">确 定</el-button>
                     </div>
                     </el-dialog>
                     </div>
@@ -66,6 +72,7 @@ export default {
     data(){
         return{
             secretLists : {},
+            commentlists: [],
             servicePath:"http://localhost:8082/secret_img/",
             visible2: false,
             currentDate: new Date(),
@@ -80,7 +87,6 @@ export default {
                 content :''
             },
             formLabelWidth: '120px'
-      
         }
     },
     mounted:function(){
@@ -90,8 +96,6 @@ export default {
         secretList:function(){
             var _this = this;
             this.$ajax.post('http://localhost:8082/secret/list',{}).then(function(res){
-                console.log(res.data.code);
-                console.log(res.data.data);
                 if(res.data.code == 0){
                     _this.secretLists = res.data.data
                 }else{
@@ -117,10 +121,11 @@ export default {
             
         },
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/png';
+            var alltype = "image/png,image/jpg";
+            const isJPG = alltype.indexOf(file.type);
             const isLt2M = file.size / 1024 / 1024 < 2;
 
-            if (!isJPG) {
+            if (isJPG < 0) {
                 this.$message.error('上传头像图片只能是 JPG 格式!');
             }
             if (!isLt2M) {
@@ -131,8 +136,8 @@ export default {
         },
         addComment:function(id){
             this.$ajax.post('http://localhost:8082/comment/add',qs.stringify({
-
-                content : this.form.content
+                id : id,
+                content : this.form.name
             })).then(function(res){
                 if(res.data.code == 0){
                     Message({
@@ -146,7 +151,8 @@ export default {
                     })
                 }
             })
-            this.dialogFormVisible = false
+            this.dialogFormVisible = false;
+            this.form.name = "";
         },
         addSecret:function(){
             this.$ajax.post('http://localhost:8082/secret/add',qs.stringify({
@@ -167,7 +173,26 @@ export default {
                     })
                 }
             })
+            this.secret.content = '';
             this.dialogSecretVisible = false
+        },
+        commentList:function(){
+            var _this = this;
+            this.dialogFormVisible = true;
+            this.$ajax.post('http://localhost:8082/comment/list',{}).then(function(res){
+                if(res.data.code == 0){
+                    _this.commentlists = res.data.data;
+                    console.log(_this.commentlists);
+                }else{
+                    Message({
+                        message : 'Fail!',
+                        tyep : 'error'
+                    })
+                }
+            })
+        },
+        closeCard:function(){
+            console.log("closeCard");
         }
     }
 }

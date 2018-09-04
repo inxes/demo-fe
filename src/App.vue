@@ -10,12 +10,14 @@
     active-text-color="#ffd04b"
     router=true
   >
+    <el-menu-item index="/">Dream</el-menu-item>
+    <el-menu-item index="/uploadToWall">上传到照片墙</el-menu-item>
     <el-menu-item index="/123">任务list</el-menu-item>
     <el-menu-item index="/upload">百度识图</el-menu-item>
     <el-menu-item index="/secret">secret</el-menu-item>
     <!-- <el-menu-item index="/">Library</el-menu-item> -->
     <el-submenu index="2" style="float: right;">
-      <template slot="title">我的工作台</template>
+      <template slot="title" v-show="showMy">我的工作台</template>
       <el-menu-item index="/myWorkSpace">选项1</el-menu-item>
     </el-submenu>
     <el-menu-item index="/login" style=" float: right;" v-show="showLogin">Login</el-menu-item> 
@@ -50,7 +52,8 @@ export default {
   data() {
     return {
       activeIndex2: '1',
-      showLogin:false
+      showLogin:true,
+      showMy : !showLogin
     };
   },
   mounted: function (){
@@ -71,6 +74,7 @@ export default {
   },
   watch:{
     showLogin:function(newValue,oldValue){
+      console.log("new"+newValue+",old:"+oldValue);
       this.getLoginStatus();
     }
   }
